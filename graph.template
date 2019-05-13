@@ -1,0 +1,122 @@
+//Alexander Urbanyak
+
+namespace main_savitch_15
+{
+
+template <class Item>
+void graph<Item>::add_vertex(const Item& label){
+    labels.push_back(label);
+}
+
+template <class Item>
+void graph<Item>::add_edge(const Item& source, const Item& target){
+assert(vertex_number(source) < size( ));
+assert(vertex_number(target) < size( ));
+    std::set<Item> edge = {source, target};
+    edges.push_back(edge);
+}
+
+template <class Item>
+void graph<Item>::remove_edge(const Item& source, const Item& target){
+assert(vertex_number(source) < size( ));
+assert(vertex_number(target) < size( ));
+
+    int count = 0;
+    bool rem = false;
+    for (typename std::vector<std::set<Item>>::const_iterator it = edges.begin(); it != edges.end(); ++it) {
+        if (rem == true)
+            break;
+                std::set<Item> edge = *it;
+                for (typename std::set<Item>::const_iterator itr = edge.begin(); itr != edge.end(); ++itr) {
+                    Item prev = *itr;
+                    itr++;
+                    if (prev == source) {
+                        if (*itr == target)
+                            rem = true;
+                    }
+                    else if (*itr == source) {
+                        if (prev == target)
+                            rem = true;
+                    }
+                }
+        count++;
+    }
+    edges.erase(edges.begin()+(count-1));
+}
+
+template <class Item>
+Item& graph<Item>::operator [ ] (std::size_t vertex){
+assert(vertex < size( ));
+    int count = 0;
+    for (typename std::vector<Item>::iterator itr = labels.begin(); itr != labels.end(); ++itr) {
+        if (count == vertex)
+            return *itr;
+        count++;
+    }
+}
+
+template <class Item>
+bool graph<Item>::is_edge(const Item& source, const Item& target) const{
+assert(vertex_number(source) < size( ));
+assert(vertex_number(target) < size( ));
+    for (typename std::vector<std::set<Item>>::const_iterator it = edges.begin(); it != edges.end(); ++it) {
+            std::set<Item> edge = *it;
+            for (typename std::set<Item>::const_iterator itr = edge.begin(); itr != edge.end(); ++itr) {
+                Item prev = *itr;
+                itr++;
+                if (prev == source) {
+                    if (*itr == target)
+                        return true;
+                }
+                else if (*itr == source) {
+                    if (prev == target)
+                        return true;
+                }
+            }
+    }
+    return false;
+}
+
+template <class Item>
+std::set<Item> graph<Item>::neighbors (const Item& v) const{
+assert(vertex_number(v) < size( ));
+    std::set<Item> neighbors;
+    for (typename std::vector<std::set<Item>>::const_iterator it = edges.begin(); it != edges.end(); ++it) {
+                std::set<Item> edge = *it;
+                for (typename std::set<Item>::const_iterator itr = edge.begin(); itr != edge.end(); ++itr) {
+                    Item prev = *itr;
+                    itr++;
+                    if (*itr == v ) {
+                        neighbors.insert(prev);
+                    }
+                    else if (prev == v ) {
+                        neighbors.insert(*itr);
+                    }
+                }
+    }
+    return neighbors;
+}
+
+template <class Item>
+Item graph<Item>::operator[ ] (std::size_t vertex) const{
+assert(vertex < size( ));
+    int count = 0;
+    for (typename std::vector<Item>::const_iterator itr = labels.begin(); itr != labels.end(); ++itr) {
+        if (count == vertex)
+            return *itr;
+        count++;
+    }
+}
+
+template <class Item>
+std::size_t graph<Item>::vertex_number (const Item& v) const{
+assert(std::find(labels.begin(), labels.end(), v) != labels.end());
+
+    int count = 0;
+    for (typename std::vector<Item>::const_iterator itr = labels.begin(); itr != labels.end(); ++itr) {
+        if (*itr == v)
+            return count;
+        count++;
+    }
+}
+}
